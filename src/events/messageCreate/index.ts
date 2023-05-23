@@ -80,7 +80,7 @@ export default async (message: Message) => {
       const generalChat = await message.guild.channels.fetch(GENERAL_CHAT_ID);
 
       if (generalChat.type === ChannelType.GuildText) {
-        generalChat.send({ content: `Seja bem vindo caro <@${member.id}>!` });
+        generalChat.send({ content: `Bem vindo, nephalem <@${member.id}>!` });
       }
       setTimeout(() => message.channel.delete(), 3000);
     }
