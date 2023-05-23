@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "~config": ["config"],
+      "~client": ["client"],
+      "~events": ["events"],
+      "~types": ["types"],
+      "~embeds": ["embeds"],
+      "~components": ["components"],
+      "~constants/*": ["constants/*"],
+      "~database/*": ["database/*"],
+      "~database": ["database"],
+      "~interfaces/*": ["interfaces/*"],
+      "~interfaces": ["interfaces"],
+      "~utils/*": ["utils/*"],
+      "~utils": ["utils"],
+      "~config/*": ["config/*"]
+    }
+  }
+}
