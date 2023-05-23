@@ -17,6 +17,7 @@ export default async (interaction: Interaction) => {
 
   if (interaction.isButton()) {
     if (interaction.customId === "leveling") {
+      interaction.deferUpdate();
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (member.roles.cache.has(LEVELING_ROLE_ID)) {
         member.roles.remove(LEVELING_ROLE_ID);
@@ -25,6 +26,7 @@ export default async (interaction: Interaction) => {
       }
     }
     if (interaction.customId === "pvp") {
+      interaction.deferUpdate();
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (member.roles.cache.has(PVP_ROLE_ID)) {
         member.roles.remove(PVP_ROLE_ID);
@@ -33,6 +35,7 @@ export default async (interaction: Interaction) => {
       }
     }
     if (interaction.customId === "bounty") {
+      interaction.deferUpdate();
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (member.roles.cache.has(BOUNTY_ROLE_ID)) {
         member.roles.remove(BOUNTY_ROLE_ID);
@@ -41,6 +44,7 @@ export default async (interaction: Interaction) => {
       }
     }
     if (interaction.customId === "dungeon") {
+      interaction.deferUpdate();
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (member.roles.cache.has(DUNGEON_ROLE_ID)) {
         member.roles.remove(DUNGEON_ROLE_ID);
@@ -49,6 +53,7 @@ export default async (interaction: Interaction) => {
       }
     }
     if (interaction.customId === "nightmare_dungeon") {
+      interaction.deferUpdate();
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (member.roles.cache.has(NIGHTMARE_DUNGEON_ROLE_ID)) {
         member.roles.remove(NIGHTMARE_DUNGEON_ROLE_ID);
