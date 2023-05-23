@@ -2,12 +2,60 @@ import { GuildMember, PermissionsBitField } from "discord.js";
 import { ChannelType, Interaction } from "~types";
 
 export default async (interaction: Interaction) => {
-  const { FORM_CATEGORY_ID, MEMBER_ROLE_ID } = process.env;
+  const {
+    FORM_CATEGORY_ID,
+    MEMBER_ROLE_ID,
+    LEVELING_ROLE_ID,
+    PVP_ROLE_ID,
+    BOUNTY_ROLE_ID,
+    DUNGEON_ROLE_ID,
+    NIGHTMARE_DUNGEON_ROLE_ID,
+  } = process.env;
   const member = interaction.member as GuildMember;
   const user = member.user;
   const guild = member.guild;
 
   if (interaction.isButton()) {
+    if (interaction.customId === "leveling") {
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (member.roles.cache.has(LEVELING_ROLE_ID)) {
+        member.roles.remove(LEVELING_ROLE_ID);
+      } else {
+        member.roles.add(LEVELING_ROLE_ID);
+      }
+    }
+    if (interaction.customId === "pvp") {
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (member.roles.cache.has(PVP_ROLE_ID)) {
+        member.roles.remove(PVP_ROLE_ID);
+      } else {
+        member.roles.add(PVP_ROLE_ID);
+      }
+    }
+    if (interaction.customId === "bounty") {
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (member.roles.cache.has(BOUNTY_ROLE_ID)) {
+        member.roles.remove(BOUNTY_ROLE_ID);
+      } else {
+        member.roles.add(BOUNTY_ROLE_ID);
+      }
+    }
+    if (interaction.customId === "dungeon") {
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (member.roles.cache.has(DUNGEON_ROLE_ID)) {
+        member.roles.remove(DUNGEON_ROLE_ID);
+      } else {
+        member.roles.add(DUNGEON_ROLE_ID);
+      }
+    }
+    if (interaction.customId === "nightmare_dungeon") {
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (member.roles.cache.has(NIGHTMARE_DUNGEON_ROLE_ID)) {
+        member.roles.remove(NIGHTMARE_DUNGEON_ROLE_ID);
+      } else {
+        member.roles.add(NIGHTMARE_DUNGEON_ROLE_ID);
+      }
+    }
     if (interaction.customId == "refuseRules") {
       interaction.reply({
         ephemeral: true,
