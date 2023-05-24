@@ -76,7 +76,7 @@ export default async (interaction: Interaction) => {
         if (formChannel) {
           interaction.reply({
             ephemeral: true,
-            content: `Já existe um canal criado para seguir o próximo passo <#${formChannel.id}>`,
+            content: `Já existe um canal criado para seguir o próximo passo, clique aqui <#${formChannel.id}>`,
           });
         } else {
           const createdChannel = await guild.channels.create({
@@ -91,7 +91,7 @@ export default async (interaction: Interaction) => {
 
           interaction.reply({
             ephemeral: true,
-            content: `O formulário foi iniciado no canal <#${createdChannel.id}>`,
+            content: `Foi iniciado um formulário para você prencher, clique aqui <#${createdChannel.id}>`,
           });
         }
       }
