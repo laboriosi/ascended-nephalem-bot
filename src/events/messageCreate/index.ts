@@ -50,42 +50,45 @@ import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "
 //   return row.replace(/\s/g, "").replace("><", "> <").split(" ");
 // }
 export default async (message: Message) => {
-  const { FORM_CATEGORY_ID, MEMBER_ROLE_ID, VISITANT_ROLE_ID, OWNER_ID, GENERAL_CHAT_ID } = process.env;
-  const messageChannel = await message.channel.fetch();
-  const discordNicknameCharacterLimit = 32;
-  if (
-    messageChannel.type === ChannelType.GuildText &&
-    messageChannel.parentId === FORM_CATEGORY_ID &&
-    !message.author.bot
-  ) {
-    const battleTagRegex = /\S+#\d+/gm;
-    const [battleTag] = message.content.match(battleTagRegex) || [];
+  try {
+    const { FORM_CATEGORY_ID, MEMBER_ROLE_ID, VISITANT_ROLE_ID, OWNER_ID, GENERAL_CHAT_ID } = process.env;
+    const messageChannel = await message.channel.fetch();
+    const discordNicknameCharacterLimit = 32;
+    if (
+      messageChannel.type === ChannelType.GuildText &&
+      messageChannel.parentId === FORM_CATEGORY_ID &&
+      !message.author.bot
+    ) {
+      const battleTagRegex = /\S+#\d+/gm;
+      const [battleTag] = message.content.match(battleTagRegex) || [];
 
-    if (!battleTag) {
-      messageChannel.send({
-        embeds: [formInvalidBattleTag],
-      });
-    } else if (battleTag.length >= discordNicknameCharacterLimit) {
-      messageChannel.send({
-        embeds: [formBattleTagCharacterLimit],
-      });
-    } else {
-      const member = await message.guild.members.fetch(message.author.id);
-      if (member.id !== OWNER_ID) await member.setNickname(battleTag);
-      await messageChannel.send({
-        embeds: [formSuccess],
-      });
-      await member.roles.add(MEMBER_ROLE_ID);
-      await member.roles.remove(VISITANT_ROLE_ID);
-      const generalChat = await message.guild.channels.fetch(GENERAL_CHAT_ID);
+      if (!battleTag) {
+        messageChannel.send({
+          embeds: [formInvalidBattleTag],
+        });
+      } else if (battleTag.length >= discordNicknameCharacterLimit) {
+        messageChannel.send({
+          embeds: [formBattleTagCharacterLimit],
+        });
+      } else {
+        const member = await message.guild.members.fetch(message.author.id);
+        if (member.id !== OWNER_ID) await member.setNickname(battleTag);
+        await messageChannel.send({
+          embeds: [formSuccess],
+        });
+        await member.roles.add(MEMBER_ROLE_ID);
+        await member.roles.remove(VISITANT_ROLE_ID);
+        const generalChat = await message.guild.channels.fetch(GENERAL_CHAT_ID);
 
-      if (generalChat.type === ChannelType.GuildText) {
-        generalChat.send({ content: `Bem vindo, nephalem <@${member.id}>!` });
+        if (generalChat.type === ChannelType.GuildText) {
+          generalChat.send({ content: `Bem vindo, nephalem <@${member.id}>!` });
+        }
+        setTimeout(() => message.channel.delete(), 3000);
       }
-      setTimeout(() => message.channel.delete(), 3000);
     }
+  } catch (error) {
+    console.log(error);
   }
-
   //   const isChannelAllowed = CHANNELS_ALLOWED.some((channelId) => channelId === message.channelId);
   //   if (message.content === "!flip") {
   //     const oneOrTwo = Math.floor(Math.random() * 2) + 1;

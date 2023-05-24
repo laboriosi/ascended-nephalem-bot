@@ -2,98 +2,102 @@ import { GuildMember, PermissionsBitField } from "discord.js";
 import { ChannelType, Interaction } from "~types";
 
 export default async (interaction: Interaction) => {
-  const {
-    FORM_CATEGORY_ID,
-    MEMBER_ROLE_ID,
-    LEVELING_ROLE_ID,
-    PVP_ROLE_ID,
-    BOUNTY_ROLE_ID,
-    DUNGEON_ROLE_ID,
-    NIGHTMARE_DUNGEON_ROLE_ID,
-  } = process.env;
-  const member = interaction.member as GuildMember;
-  const user = member.user;
-  const guild = member.guild;
+  try {
+    const {
+      FORM_CATEGORY_ID,
+      MEMBER_ROLE_ID,
+      LEVELING_ROLE_ID,
+      PVP_ROLE_ID,
+      BOUNTY_ROLE_ID,
+      DUNGEON_ROLE_ID,
+      NIGHTMARE_DUNGEON_ROLE_ID,
+    } = process.env;
+    const member = interaction.member as GuildMember;
+    const user = member.user;
+    const guild = member.guild;
 
-  if (interaction.isButton()) {
-    if (interaction.customId === "leveling") {
-      interaction.deferUpdate();
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (member.roles.cache.has(LEVELING_ROLE_ID)) {
-        member.roles.remove(LEVELING_ROLE_ID);
-      } else {
-        member.roles.add(LEVELING_ROLE_ID);
+    if (interaction.isButton()) {
+      if (interaction.customId === "leveling") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(LEVELING_ROLE_ID)) {
+          member.roles.remove(LEVELING_ROLE_ID);
+        } else {
+          member.roles.add(LEVELING_ROLE_ID);
+        }
       }
-    }
-    if (interaction.customId === "pvp") {
-      interaction.deferUpdate();
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (member.roles.cache.has(PVP_ROLE_ID)) {
-        member.roles.remove(PVP_ROLE_ID);
-      } else {
-        member.roles.add(PVP_ROLE_ID);
+      if (interaction.customId === "pvp") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(PVP_ROLE_ID)) {
+          member.roles.remove(PVP_ROLE_ID);
+        } else {
+          member.roles.add(PVP_ROLE_ID);
+        }
       }
-    }
-    if (interaction.customId === "bounty") {
-      interaction.deferUpdate();
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (member.roles.cache.has(BOUNTY_ROLE_ID)) {
-        member.roles.remove(BOUNTY_ROLE_ID);
-      } else {
-        member.roles.add(BOUNTY_ROLE_ID);
+      if (interaction.customId === "bounty") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(BOUNTY_ROLE_ID)) {
+          member.roles.remove(BOUNTY_ROLE_ID);
+        } else {
+          member.roles.add(BOUNTY_ROLE_ID);
+        }
       }
-    }
-    if (interaction.customId === "dungeon") {
-      interaction.deferUpdate();
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (member.roles.cache.has(DUNGEON_ROLE_ID)) {
-        member.roles.remove(DUNGEON_ROLE_ID);
-      } else {
-        member.roles.add(DUNGEON_ROLE_ID);
+      if (interaction.customId === "dungeon") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(DUNGEON_ROLE_ID)) {
+          member.roles.remove(DUNGEON_ROLE_ID);
+        } else {
+          member.roles.add(DUNGEON_ROLE_ID);
+        }
       }
-    }
-    if (interaction.customId === "nightmare_dungeon") {
-      interaction.deferUpdate();
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (member.roles.cache.has(NIGHTMARE_DUNGEON_ROLE_ID)) {
-        member.roles.remove(NIGHTMARE_DUNGEON_ROLE_ID);
-      } else {
-        member.roles.add(NIGHTMARE_DUNGEON_ROLE_ID);
+      if (interaction.customId === "nightmare_dungeon") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(NIGHTMARE_DUNGEON_ROLE_ID)) {
+          member.roles.remove(NIGHTMARE_DUNGEON_ROLE_ID);
+        } else {
+          member.roles.add(NIGHTMARE_DUNGEON_ROLE_ID);
+        }
       }
-    }
-    if (interaction.customId == "refuseRules") {
-      interaction.reply({
-        ephemeral: true,
-        content: `Parece receber o cargo de <@&${MEMBER_ROLE_ID}> você deve ler e concordar com as regras`,
-      });
-    }
-
-    if (interaction.customId == "readAndAgreeRules") {
-      const channelName = `📝┃form-do-${user.username.toLowerCase()}`;
-      const formChannel = guild.channels.cache.find((channel) => channel.name === channelName);
-
-      if (formChannel) {
+      if (interaction.customId == "refuseRules") {
         interaction.reply({
           ephemeral: true,
-          content: `Já existe um canal criado para seguir o próximo passo <#${formChannel.id}>`,
-        });
-      } else {
-        const createdChannel = await guild.channels.create({
-          name: channelName,
-          type: ChannelType.GuildText,
-          parent: FORM_CATEGORY_ID,
-          permissionOverwrites: [
-            { id: member.id, allow: [PermissionsBitField.Default] },
-            { id: guild.roles.everyone, deny: [PermissionsBitField.All] },
-          ],
-        });
-
-        interaction.reply({
-          ephemeral: true,
-          content: `O formulário foi iniciado no canal <#${createdChannel.id}>`,
+          content: `Parece receber o cargo de <@&${MEMBER_ROLE_ID}> você deve ler e concordar com as regras`,
         });
       }
+
+      if (interaction.customId == "readAndAgreeRules") {
+        const channelName = `📝┃form-do-${user.username.toLowerCase()}`;
+        const formChannel = guild.channels.cache.find((channel) => channel.name === channelName);
+
+        if (formChannel) {
+          interaction.reply({
+            ephemeral: true,
+            content: `Já existe um canal criado para seguir o próximo passo <#${formChannel.id}>`,
+          });
+        } else {
+          const createdChannel = await guild.channels.create({
+            name: channelName,
+            type: ChannelType.GuildText,
+            parent: FORM_CATEGORY_ID,
+            permissionOverwrites: [
+              { id: member.id, allow: [PermissionsBitField.Default] },
+              { id: guild.roles.everyone, deny: [PermissionsBitField.All] },
+            ],
+          });
+
+          interaction.reply({
+            ephemeral: true,
+            content: `O formulário foi iniciado no canal <#${createdChannel.id}>`,
+          });
+        }
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
   // const { FORM_CATEGORY_ID, MEMBER_ROLE_ID, WAITING_FORM_ROLE_ID, MEMBERS_TEXT_CHANNEL_ID, VISITANT_ROLE_ID } =
   //   process.env;

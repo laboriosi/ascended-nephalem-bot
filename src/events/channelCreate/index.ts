@@ -2,10 +2,14 @@ import { NonThreadGuildBasedChannel, ComponentType, ChannelType, UserInfo, Guild
 import { formQuestionBattleTag } from "~embeds";
 
 export default async (channel: NonThreadGuildBasedChannel) => {
-  const { FORM_CATEGORY_ID } = process.env;
+  try {
+    const { FORM_CATEGORY_ID } = process.env;
 
-  if (channel.type === ChannelType.GuildText && channel.parentId === FORM_CATEGORY_ID) {
-    await channel.send({ embeds: [formQuestionBattleTag] });
+    if (channel.type === ChannelType.GuildText && channel.parentId === FORM_CATEGORY_ID) {
+      await channel.send({ embeds: [formQuestionBattleTag] });
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   // if (channel.type === ChannelType.GuildText) {

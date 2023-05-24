@@ -15,6 +15,7 @@ function getRandomEmoji() {
 }
 
 export default async (oldState: VoiceState, newState: VoiceState) => {
+  try {
   const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID } = process.env;
   const isJoiningCreateRoomChannel = newState.channelId === CREATE_VOICE_CHANNEL_ID;
   const isLastMemberLeavingTemporaryChannel =
@@ -49,4 +50,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     });
     await creator.voice.setChannel(createdChannel.id);
   }
+} catch (error) {
+  console.log(error);
+}
 };
