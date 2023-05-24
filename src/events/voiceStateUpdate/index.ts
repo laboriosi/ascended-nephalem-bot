@@ -16,41 +16,41 @@ function getRandomEmoji() {
 
 export default async (oldState: VoiceState, newState: VoiceState) => {
   try {
-  const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID } = process.env;
-  const isJoiningCreateRoomChannel = newState.channelId === CREATE_VOICE_CHANNEL_ID;
-  const isLastMemberLeavingTemporaryChannel =
-    oldState.channelId !== CREATE_VOICE_CHANNEL_ID &&
-    oldState.channel?.parent?.id === GROUPS_CATEGORY_ID &&
-    oldState.channel.members.size === 0;
+    const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID } = process.env;
+    const isJoiningCreateRoomChannel = newState.channelId === CREATE_VOICE_CHANNEL_ID;
+    const isLastMemberLeavingTemporaryChannel =
+      oldState.channelId !== CREATE_VOICE_CHANNEL_ID &&
+      oldState.channel?.parent?.id === GROUPS_CATEGORY_ID &&
+      oldState.channel.members.size === 0;
 
-  const emoji = getRandomEmoji();
+    const emoji = getRandomEmoji();
 
-  if (isLastMemberLeavingTemporaryChannel) {
-    await oldState.channel.delete();
+    if (isLastMemberLeavingTemporaryChannel) {
+      await oldState.channel.delete();
+    }
+
+    if (isJoiningCreateRoomChannel) {
+      const creator = newState.member;
+      const creatorName = creator.displayName;
+      const createdChannel = await newState.guild.channels.create({
+        name: `「${emoji}」Grupo do ${creatorName}`,
+        type: ChannelType.GuildVoice,
+        parent: newState.channel.parent,
+        permissionOverwrites: [
+          {
+            id: creator.id,
+            allow: [
+              PermissionsBitField.Flags.MoveMembers,
+              PermissionsBitField.Flags.ManageChannels,
+              PermissionsBitField.Flags.UseExternalSounds,
+              PermissionsBitField.Flags.UseSoundboard,
+            ],
+          },
+        ],
+      });
+      await creator.voice.setChannel(createdChannel.id);
+    }
+  } catch (error) {
+    console.log(error);
   }
-
-  if (isJoiningCreateRoomChannel) {
-    const creator = newState.member;
-    const creatorName = creator.displayName;
-    const createdChannel = await newState.guild.channels.create({
-      name: `「${emoji}」Grupo do ${creatorName}`,
-      type: ChannelType.GuildVoice,
-      parent: newState.channel.parent,
-      permissionOverwrites: [
-        {
-          id: creator.id,
-          allow: [
-            PermissionsBitField.Flags.MoveMembers,
-            PermissionsBitField.Flags.ManageChannels,
-            PermissionsBitField.Flags.UseExternalSounds,
-            PermissionsBitField.Flags.UseSoundboard,
-          ],
-        },
-      ],
-    });
-    await creator.voice.setChannel(createdChannel.id);
-  }
-} catch (error) {
-  console.log(error);
-}
 };
