@@ -4,10 +4,23 @@ import { ruleOptions, rolesOptions } from "~components";
 
 export default async (client: Client) => {
   try {
-    const { VISITANT_RULES_TEXT_CHANNEL_ID: visitantRulesTextChannelId, ROLES_TEXT_CHANNEL_ID: rolesTextChannelId } =
-      process.env;
+    const {
+      VISITANT_RULES_TEXT_CHANNEL_ID: visitantRulesTextChannelId,
+      MEMBER_RULES_TEXT_CHANNEL_ID: memberRulesTextChannelId,
+      ROLES_TEXT_CHANNEL_ID: rolesTextChannelId,
+    } = process.env;
 
     const visitantRulesTextChannel = await client.channels.fetch(visitantRulesTextChannelId);
+    const memberRulesTextChannel = await client.channels.fetch(memberRulesTextChannelId);
+
+    if (memberRulesTextChannel.type === ChannelType.GuildText) {
+      const messages = await memberRulesTextChannel.messages.fetch();
+      const lastMessage = messages.last();
+
+      if (!lastMessage) {
+        await memberRulesTextChannel.send({ embeds: [rules] });
+      }
+    }
 
     if (visitantRulesTextChannel.type === ChannelType.GuildText) {
       const messages = await visitantRulesTextChannel.messages.fetch();
