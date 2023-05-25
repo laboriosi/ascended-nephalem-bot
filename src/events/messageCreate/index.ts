@@ -51,7 +51,14 @@ import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "
 // }
 export default async (message: Message) => {
   try {
-    const { FORM_CATEGORY_ID, MEMBER_ROLE_ID, VISITANT_ROLE_ID, OWNER_ID, GENERAL_CHAT_ID } = process.env;
+    const {
+      FORM_CATEGORY_ID,
+      MEMBER_ROLE_ID,
+      VISITANT_ROLE_ID,
+      OWNER_ID,
+      GENERAL_CHAT_ID,
+      RECRUITMENT_PENDING_ROLE_ID,
+    } = process.env;
     const messageChannel = await message.channel.fetch();
     const discordNicknameCharacterLimit = 32;
     if (
@@ -77,6 +84,7 @@ export default async (message: Message) => {
           embeds: [formSuccess],
         });
         await member.roles.add(MEMBER_ROLE_ID);
+        await member.roles.add(RECRUITMENT_PENDING_ROLE_ID);
         await member.roles.remove(VISITANT_ROLE_ID);
         const generalChat = await message.guild.channels.fetch(GENERAL_CHAT_ID);
 
