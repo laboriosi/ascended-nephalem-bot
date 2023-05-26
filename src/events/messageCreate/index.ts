@@ -1,7 +1,26 @@
-import { ChannelType, Message } from "~types";
+import { ChannelType, Message, TextChannel } from "~types";
 import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "~embeds";
+import { EmbedBuilder } from "discord.js";
 
 export default async (message: Message) => {
+  const { LOGS_TEXT_CHANNEL_ID: logsTextChannelId } = process.env;
+
+  const logsTextChannel = await message.guild.channels.fetch(logsTextChannelId);
+
+  if (logsTextChannel.type === ChannelType.GuildText) {
+    const channel = await message.channel.fetch();
+
+    await logsTextChannel.send({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#da373c")
+          .setAuthor({ iconURL: message.author.avatarURL(), name: message.author.username })
+          .setTimestamp(message.createdTimestamp)
+          .setFields({ name: "Canal", value: `${(channel as TextChannel).name}` }),
+      ],
+    });
+  }
+
   try {
     const {
       FORM_CATEGORY_ID,
