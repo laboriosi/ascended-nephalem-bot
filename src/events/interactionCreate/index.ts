@@ -86,6 +86,11 @@ export default async (interaction: Interaction) => {
             { id: guild.roles.everyone, deny: [PermissionsBitField.All] },
           ],
         });
+
+        interaction.reply({
+          ephemeral: true,
+          content: `Foi iniciado um ticket de denúncia, clique aqui <#${createdChannel.id}>`,
+        });
       }
 
       if (interaction.customId == "suggestion") {
@@ -101,6 +106,11 @@ export default async (interaction: Interaction) => {
             { id: helperRoleId, allow: [PermissionsBitField.Default] },
             { id: guild.roles.everyone, deny: [PermissionsBitField.All] },
           ],
+        });
+
+        interaction.reply({
+          ephemeral: true,
+          content: `Foi iniciado um ticket de sugestão, clique aqui <#${createdChannel.id}>`,
         });
       }
 
