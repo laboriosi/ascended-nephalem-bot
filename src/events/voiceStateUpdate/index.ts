@@ -16,7 +16,7 @@ function getRandomEmoji() {
 
 export default async (oldState: VoiceState, newState: VoiceState) => {
   try {
-    const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID } = process.env;
+    const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID, MEMBER_ROLE_ID: memberRoleId } = process.env;
     const isJoiningCreateRoomChannel = newState.channelId === CREATE_VOICE_CHANNEL_ID;
     const isLastMemberLeavingTemporaryChannel =
       oldState.channelId !== CREATE_VOICE_CHANNEL_ID &&
@@ -46,6 +46,8 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
               PermissionsBitField.Flags.UseSoundboard,
             ],
           },
+          { id: memberRoleId, allow: [PermissionsBitField.Default] },
+          { id: newState.guild.roles.everyone, deny: [PermissionsBitField.All] },
         ],
       });
       await creator.voice.setChannel(createdChannel.id);
