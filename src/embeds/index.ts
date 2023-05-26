@@ -5,3 +5,5 @@ export { default as rolesDescription } from "./rolesDescription";
 export { default as formSuccess } from "./formSuccess";
 export { default as formBattleTagCharacterLimit } from "./formBattleTagCharacterLimit";
 export { default as supportMessage } from "./supportMessage";
+export { default as suggestionInfo } from "./suggestionInfo";
+export { default as denounceInfo } from "./denounceInfo";

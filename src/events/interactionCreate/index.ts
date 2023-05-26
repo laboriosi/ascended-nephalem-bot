@@ -1,5 +1,7 @@
 import { GuildMember, PermissionsBitField } from "discord.js";
+import { denounceInfo, suggestionInfo } from "~embeds";
 import { ChannelType, Interaction } from "~types";
+import { closeChannelButton } from "~components";
 
 export default async (interaction: Interaction) => {
   try {
@@ -29,6 +31,7 @@ export default async (interaction: Interaction) => {
           member.roles.add(levelingRoleId);
         }
       }
+
       if (interaction.customId === "pvp") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -38,6 +41,7 @@ export default async (interaction: Interaction) => {
           member.roles.add(pvpRoleId);
         }
       }
+
       if (interaction.customId === "bounty") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -47,6 +51,7 @@ export default async (interaction: Interaction) => {
           member.roles.add(bountyRoleId);
         }
       }
+
       if (interaction.customId === "dungeon") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -56,6 +61,7 @@ export default async (interaction: Interaction) => {
           member.roles.add(dungeonRoleId);
         }
       }
+
       if (interaction.customId === "nightmare_dungeon") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -65,14 +71,20 @@ export default async (interaction: Interaction) => {
           member.roles.add(nightmareDungeonRoleId);
         }
       }
-      if (interaction.customId == "refuseRules") {
+
+      if (interaction.customId === "refuseRules") {
         interaction.reply({
           ephemeral: true,
           content: `Parece receber o cargo de <@&${memberRoleId}> você deve ler e concordar com as regras`,
         });
       }
 
-      if (interaction.customId == "denounce") {
+      if (interaction.customId === "close") {
+        const channel = await interaction.channel.fetch();
+        await channel.delete();
+      }
+
+      if (interaction.customId === "denounce") {
         const channelName = `🎫┃denúncia-do-${user.username.toLowerCase()}`;
 
         const createdChannel = await guild.channels.create({
@@ -87,13 +99,15 @@ export default async (interaction: Interaction) => {
           ],
         });
 
+        await createdChannel.send({ embeds: [denounceInfo], components: [closeChannelButton] });
+
         interaction.reply({
           ephemeral: true,
           content: `Foi iniciado um ticket de denúncia, clique aqui <#${createdChannel.id}>`,
         });
       }
 
-      if (interaction.customId == "suggestion") {
+      if (interaction.customId === "suggestion") {
         const channelName = `🎫┃sugestão-do-${user.username.toLowerCase()}`;
 
         const createdChannel = await guild.channels.create({
@@ -108,13 +122,15 @@ export default async (interaction: Interaction) => {
           ],
         });
 
+        await createdChannel.send({ embeds: [suggestionInfo], components: [closeChannelButton] });
+
         interaction.reply({
           ephemeral: true,
           content: `Foi iniciado um ticket de sugestão, clique aqui <#${createdChannel.id}>`,
         });
       }
 
-      if (interaction.customId == "readAndAgreeRules") {
+      if (interaction.customId === "readAndAgreeRules") {
         const channelName = `📝┃form-do-${user.username.toLowerCase()}`;
         const formChannel = guild.channels.cache.find((channel) => channel.name === channelName);
 
