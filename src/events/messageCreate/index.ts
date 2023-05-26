@@ -7,7 +7,7 @@ export default async (message: Message) => {
 
   const logsTextChannel = await message.guild.channels.fetch(logsTextChannelId);
 
-  if (logsTextChannel.type === ChannelType.GuildText) {
+  if (logsTextChannel.type === ChannelType.GuildText && !message.author.bot) {
     const channel = await message.channel.fetch();
 
     await logsTextChannel.send({
@@ -16,6 +16,7 @@ export default async (message: Message) => {
           .setColor("#da373c")
           .setAuthor({ iconURL: message.author.avatarURL(), name: message.author.username })
           .setTimestamp(message.createdTimestamp)
+          .setDescription(message.content)
           .setFields({ name: "Canal", value: `${(channel as TextChannel).name}` }),
       ],
     });
