@@ -1,6 +1,6 @@
 import { ChannelType, Client } from "~types";
-import { rules, rolesDescription } from "~embeds";
-import { ruleOptions, rolesOptions } from "~components";
+import { rules, rolesDescription, supportMessage } from "~embeds";
+import { ruleOptions, rolesOptions, supportOptions } from "~components";
 
 export default async (client: Client) => {
   try {
@@ -8,8 +8,10 @@ export default async (client: Client) => {
       VISITANT_RULES_TEXT_CHANNEL_ID: visitantRulesTextChannelId,
       MEMBER_RULES_TEXT_CHANNEL_ID: memberRulesTextChannelId,
       ROLES_TEXT_CHANNEL_ID: rolesTextChannelId,
+      SUPPORT_TEXT_CHANNEL_ID: supportTextChannelId,
     } = process.env;
 
+    const supportTextChannel = await client.channels.fetch(supportTextChannelId);
     const visitantRulesTextChannel = await client.channels.fetch(visitantRulesTextChannelId);
     const memberRulesTextChannel = await client.channels.fetch(memberRulesTextChannelId);
 
@@ -30,6 +32,17 @@ export default async (client: Client) => {
         await lastMessage.fetch();
       } else {
         await visitantRulesTextChannel.send({ embeds: [rules], components: [ruleOptions] });
+      }
+    }
+
+    if (supportTextChannel.type === ChannelType.GuildText) {
+      const messages = await supportTextChannel.messages.fetch();
+      const lastMessage = messages.last();
+
+      if (lastMessage) {
+        await lastMessage.fetch();
+      } else {
+        await supportTextChannel.send({ embeds: [supportMessage], components: [supportOptions] });
       }
     }
 
