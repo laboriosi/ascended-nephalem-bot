@@ -8,7 +8,6 @@
     "node": ">=16.11.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && tsc-alias && cross-env cp .env ./dist/.env",
     "build:watch": "cross-env cp .env ./dist/.env && concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "start": "npm run build && node --experimental-json-modules dist/index.js"

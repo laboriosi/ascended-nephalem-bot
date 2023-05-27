@@ -1,6 +1,7 @@
 import { ChannelType, Message, TextChannel } from "~types";
 import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "~embeds";
 import { EmbedBuilder } from "discord.js";
+import database from "~database";
 
 export default async (message: Message) => {
   try {
@@ -16,6 +17,7 @@ export default async (message: Message) => {
     const messageChannel = await message.channel.fetch();
     const discordNicknameCharacterLimit = 32;
     const logsTextChannel = await message.guild.channels.fetch(logsTextChannelId);
+    const memberDocumentReference = database.collection("members");
 
     if (logsTextChannel.type === ChannelType.GuildText && !message.author.bot) {
       const channel = await message.channel.fetch();
@@ -49,6 +51,9 @@ export default async (message: Message) => {
           embeds: [formBattleTagCharacterLimit],
         });
       } else {
+        await memberDocumentReference.doc(message.author.id).set({
+          battleTag,
+        });
         const member = await message.guild.members.fetch(message.author.id);
         if (member.id !== OWNER_ID) await member.setNickname(battleTag);
         await messageChannel.send({
