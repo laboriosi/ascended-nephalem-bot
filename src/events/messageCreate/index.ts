@@ -3,27 +3,9 @@ import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "
 import { EmbedBuilder } from "discord.js";
 
 export default async (message: Message) => {
-  const { LOGS_TEXT_CHANNEL_ID: logsTextChannelId } = process.env;
-
-  const logsTextChannel = await message.guild.channels.fetch(logsTextChannelId);
-
-  if (logsTextChannel.type === ChannelType.GuildText && !message.author.bot) {
-    const channel = await message.channel.fetch();
-
-    await logsTextChannel.send({
-      embeds: [
-        new EmbedBuilder()
-          .setColor("#da373c")
-          .setAuthor({ iconURL: message.author.avatarURL(), name: message.author.username })
-          .setTimestamp(message.createdTimestamp)
-          .setDescription(message.content)
-          .setFields({ name: "Canal", value: `${(channel as TextChannel).name}` }),
-      ],
-    });
-  }
-
   try {
     const {
+      LOGS_TEXT_CHANNEL_ID: logsTextChannelId,
       FORM_CATEGORY_ID,
       MEMBER_ROLE_ID,
       VISITANT_ROLE_ID,
@@ -33,6 +15,23 @@ export default async (message: Message) => {
     } = process.env;
     const messageChannel = await message.channel.fetch();
     const discordNicknameCharacterLimit = 32;
+    const logsTextChannel = await message.guild.channels.fetch(logsTextChannelId);
+
+    if (logsTextChannel.type === ChannelType.GuildText && !message.author.bot) {
+      const channel = await message.channel.fetch();
+
+      await logsTextChannel.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#da373c")
+            .setAuthor({ iconURL: message.author.avatarURL(), name: message.author.username })
+            .setTimestamp(message.createdTimestamp)
+            .setDescription(message.content)
+            .setFields({ name: "Canal", value: `${(channel as TextChannel).name}` }),
+        ],
+      });
+    }
+
     if (
       messageChannel.type === ChannelType.GuildText &&
       messageChannel.parentId === FORM_CATEGORY_ID &&
