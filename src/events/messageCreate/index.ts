@@ -17,6 +17,7 @@ export default async (message: Message) => {
       FORM_CATEGORY_ID: formCategoryId,
       OWNER_ID: ownerId,
       PENDING_APPROVE_TEXT_CHANNEL_ID: pendingApproveTextChannelId,
+      PENDING_APPROVE_ROLE_ID: pendingApproveRoleId,
     } = process.env;
     const messageChannel = await message.channel.fetch();
     const discordNicknameCharacterLimit = 32;
@@ -60,7 +61,7 @@ export default async (message: Message) => {
 
           const member = await message.guild.members.fetch(message.author.id);
           if (member.id !== ownerId) await member.setNickname(data.battleTag);
-
+          member.roles.add(pendingApproveRoleId);
           const pendingApproveTextChannel = await message.guild.channels.fetch(pendingApproveTextChannelId);
 
           if (pendingApproveTextChannel.type === ChannelType.GuildText) {

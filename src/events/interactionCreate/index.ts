@@ -27,6 +27,7 @@ export default async (interaction: Interaction) => {
       GROUP_TEXT_CHANNEL_ID: groupTextChannelId,
       CREATE_VOICE_CHANNEL_ID: createVoiceChannelId,
       GROUPS_CATEGORY_ID: groupsCategoryId,
+      PENDING_APPROVE_ROLE_ID: pendingApproveRoleId,
     } = process.env;
     const member = interaction.member as GuildMember;
     const user = member.user;
@@ -82,8 +83,8 @@ export default async (interaction: Interaction) => {
         const member = await interaction.guild.members.fetch(discordId.value);
         await member.roles.add(memberRoleId);
         await member.roles.add(recruitmentPendingRoleId);
-        await member.roles.add("1112109456487104553"); // tirar depois que tiver tudo migrado
         await member.roles.remove(visitantRoleId);
+        await member.roles.remove(pendingApproveRoleId);
 
         const generalChat = await interaction.guild.channels.fetch(generalChatId);
 
