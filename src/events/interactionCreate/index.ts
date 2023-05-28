@@ -83,7 +83,6 @@ export default async (interaction: Interaction) => {
         const member = await interaction.guild.members.fetch(discordId.value);
         await member.roles.add(memberRoleId);
         await member.roles.add(recruitmentPendingRoleId);
-        await member.roles.remove(visitantRoleId);
         await member.roles.remove(pendingApproveRoleId);
 
         const generalChat = await interaction.guild.channels.fetch(generalChatId);
