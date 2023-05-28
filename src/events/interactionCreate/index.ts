@@ -173,7 +173,7 @@ export default async (interaction: Interaction) => {
       if (interaction.customId === "refuseRules") {
         interaction.reply({
           ephemeral: true,
-          content: `Parece receber o cargo de <@&${memberRoleId}> você deve ler e concordar com as regras`,
+          content: `Para receber o cargo de <@&${memberRoleId}> você deve ler e concordar com as regras`,
         });
       }
 
