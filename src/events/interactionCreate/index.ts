@@ -16,6 +16,7 @@ export default async (interaction: Interaction) => {
       DUNGEON_ROLE_ID: dungeonRoleId,
       NIGHTMARE_DUNGEON_ROLE_ID: nightmareDungeonRoleId,
       WORLD_BOSS_ROLE_ID: worldBossRoleId,
+      HARDCORE_ROLE_ID: hardcoreRoleId,
       TICKET_CATEGORY_ID: ticketCategoryId,
       OFFICER_ROLE_ID: officerRoleId,
       HELPER_ROLE_ID: helperRoleId,
@@ -126,6 +127,16 @@ export default async (interaction: Interaction) => {
           member.roles.remove(bountyRoleId);
         } else {
           member.roles.add(bountyRoleId);
+        }
+      }
+
+      if (interaction.customId === "hardcore") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(hardcoreRoleId)) {
+          member.roles.remove(hardcoreRoleId);
+        } else {
+          member.roles.add(hardcoreRoleId);
         }
       }
 

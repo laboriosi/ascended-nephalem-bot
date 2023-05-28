@@ -30,10 +30,16 @@ export default new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
         value: "1110663234765205626",
         emoji: "<:nightmare_dungeon:1110605351851659336>",
       },
+
       {
         label: "World Boss",
         value: "1112403692868616323",
         emoji: "<:world_boss2:1110889291279761428>",
+      },
+      {
+        label: "Hardcore",
+        value: "1112494172742619187",
+        emoji: "<:hardcore:1112493800422654032>",
       }
     )
 );

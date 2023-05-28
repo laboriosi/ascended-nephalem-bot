@@ -15,5 +15,10 @@ export default new ActionRowBuilder<ButtonBuilder>().addComponents(
     .setCustomId("bounty")
     .setLabel("Bounty")
     .setStyle(ButtonStyle.Secondary)
-    .setEmoji("<:bounty:1110635757565132901>")
+    .setEmoji("<:bounty:1110635757565132901>"),
+  new ButtonBuilder()
+    .setCustomId("hardcore")
+    .setLabel("Hardcore")
+    .setStyle(ButtonStyle.Secondary)
+    .setEmoji("<:hardcore:1112493800422654032>")
 );
