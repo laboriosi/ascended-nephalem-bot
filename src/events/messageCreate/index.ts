@@ -1,5 +1,12 @@
 import { ChannelType, Message, TextChannel } from "~types";
-import { formInvalidBattleTag, formSuccess, formBattleTagCharacterLimit } from "~embeds";
+import {
+  formInvalidBattleTag,
+  formQuestionCellphone,
+  formSuccess,
+  formBattleTagCharacterLimit,
+  formInvalidCellphone,
+} from "~embeds";
+import { visitantOptions } from "~components";
 import { EmbedBuilder } from "discord.js";
 import database from "~database";
 
@@ -7,12 +14,9 @@ export default async (message: Message) => {
   try {
     const {
       LOGS_TEXT_CHANNEL_ID: logsTextChannelId,
-      FORM_CATEGORY_ID,
-      MEMBER_ROLE_ID,
-      VISITANT_ROLE_ID,
-      OWNER_ID,
-      GENERAL_CHAT_ID,
-      RECRUITMENT_PENDING_ROLE_ID,
+      FORM_CATEGORY_ID: formCategoryId,
+      OWNER_ID: ownerId,
+      PENDING_APPROVE_TEXT_CHANNEL_ID: pendingApproveTextChannelId,
     } = process.env;
     const messageChannel = await message.channel.fetch();
     const discordNicknameCharacterLimit = 32;
@@ -36,38 +40,74 @@ export default async (message: Message) => {
 
     if (
       messageChannel.type === ChannelType.GuildText &&
-      messageChannel.parentId === FORM_CATEGORY_ID &&
+      messageChannel.parentId === formCategoryId &&
       !message.author.bot
     ) {
-      const battleTagRegex = /\S+#\d+/gm;
-      const [battleTag] = message.content.match(battleTagRegex) || [];
+      const memberDocument = await memberDocumentReference.doc(message.author.id).get();
 
-      if (!battleTag) {
-        messageChannel.send({
-          embeds: [formInvalidBattleTag],
-        });
-      } else if (battleTag.length >= discordNicknameCharacterLimit) {
-        messageChannel.send({
-          embeds: [formBattleTagCharacterLimit],
-        });
-      } else {
-        await memberDocumentReference.doc(message.author.id).set({
-          battleTag,
-        });
-        const member = await message.guild.members.fetch(message.author.id);
-        if (member.id !== OWNER_ID) await member.setNickname(battleTag);
-        await messageChannel.send({
-          embeds: [formSuccess],
-        });
-        await member.roles.add(MEMBER_ROLE_ID);
-        await member.roles.add(RECRUITMENT_PENDING_ROLE_ID);
-        await member.roles.remove(VISITANT_ROLE_ID);
-        const generalChat = await message.guild.channels.fetch(GENERAL_CHAT_ID);
+      if (memberDocument.exists) {
+        const numbers = message.content.replace(/\D/gm, "");
+        const data = memberDocument.data();
+        if (numbers.length < 5) {
+          messageChannel.send({
+            embeds: [formInvalidCellphone],
+          });
+        } else {
+          memberDocumentReference.doc(message.author.id).update({
+            ...data,
+            cellphone: message.content,
+          });
 
-        if (generalChat.type === ChannelType.GuildText) {
-          generalChat.send({ content: `Bem vindo, nephalem <@${member.id}>!` });
+          const member = await message.guild.members.fetch(message.author.id);
+          if (member.id !== ownerId) await member.setNickname(data.battleTag);
+
+          const pendingApproveTextChannel = await message.guild.channels.fetch(pendingApproveTextChannelId);
+
+          if (pendingApproveTextChannel.type === ChannelType.GuildText) {
+            pendingApproveTextChannel.send({
+              embeds: [
+                new EmbedBuilder()
+                  .setColor("#da373c")
+                  .addFields(
+                    { name: "BattleTag", value: data.battleTag },
+                    { name: "Celular", value: message.content },
+                    { name: "DiscordId", value: message.author.id }
+                  )
+                  .setThumbnail(
+                    member.displayAvatarURL() || "https://i.ibb.co/SKMwMZv/1f0bfc0865d324c2587920a7d80c609b-1.png"
+                  ),
+              ],
+              components: [visitantOptions],
+            });
+          }
+
+          await messageChannel.send({
+            embeds: [formSuccess],
+          });
+
+          setTimeout(() => message.channel.delete(), 5000);
         }
-        setTimeout(() => message.channel.delete(), 3000);
+      } else {
+        const battleTagRegex = /\S+#\d+/gm;
+        const [battleTag] = message.content.match(battleTagRegex) || [];
+
+        if (!battleTag) {
+          messageChannel.send({
+            embeds: [formInvalidBattleTag],
+          });
+        } else if (battleTag.length >= discordNicknameCharacterLimit) {
+          messageChannel.send({
+            embeds: [formBattleTagCharacterLimit],
+          });
+        } else {
+          await memberDocumentReference.doc(message.author.id).set({
+            battleTag,
+          });
+
+          await messageChannel.send({
+            embeds: [formQuestionCellphone],
+          });
+        }
       }
     }
   } catch (error) {

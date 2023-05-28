@@ -1,6 +1,7 @@
 import { ChannelType, VoiceState } from "~types";
 import emoji from "~constants/emoji";
 import { PermissionsBitField } from "discord.js";
+import database from "~database";
 
 function generateRandomNumber(limit: number): number {
   const randomNumber = Math.random() * limit;
@@ -18,12 +19,19 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
   try {
     const { CREATE_VOICE_CHANNEL_ID, GROUPS_CATEGORY_ID, MEMBER_ROLE_ID: memberRoleId } = process.env;
     const isJoiningCreateRoomChannel = newState.channelId === CREATE_VOICE_CHANNEL_ID;
+    const memberDocumentReference = database.collection("members");
     const isLastMemberLeavingTemporaryChannel =
       oldState.channelId !== CREATE_VOICE_CHANNEL_ID &&
       oldState.channel?.parent?.id === GROUPS_CATEGORY_ID &&
       oldState.channel.members.size === 0;
 
     const emoji = getRandomEmoji();
+
+    if (newState?.channel?.type === ChannelType.GuildVoice) {
+      await memberDocumentReference.doc(newState.member.id).update({
+        lastTimeJoinedCall: Date.now(),
+      });
+    }
 
     if (isLastMemberLeavingTemporaryChannel) {
       await oldState.channel.delete();

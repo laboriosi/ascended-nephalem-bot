@@ -1,6 +1,10 @@
 export { default as recruitmentFormButton } from "./buttons/recruitmentFormButton";
-export { default as recruitmentFormTimeOfDay } from "./selects/recruitmentFormTimeOfDay";
+export { default as roleSelect } from "./selects/roleSelect";
 export { default as ruleOptions } from "./buttons/ruleOptions";
-export { default as rolesOptions } from "./buttons/rolesOptions";
+export { default as rolesOptionsFirstRow } from "./buttons/rolesOptionsFirstRow";
+export { default as rolesOptionsSecondRow } from "./buttons/rolesOptionsSecondRow";
 export { default as supportOptions } from "./buttons/supportOptions";
 export { default as closeChannelButton } from "./buttons/closeChannelButton";
+export { default as visitantOptions } from "./buttons/visitantOptions";
+export { default as shareGroup } from "./buttons/shareGroup";
+export { default as groupDescriptionModal } from "./modal/groupDescriptionModal";

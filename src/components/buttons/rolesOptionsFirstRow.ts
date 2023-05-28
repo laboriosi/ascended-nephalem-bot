@@ -15,15 +15,5 @@ export default new ActionRowBuilder<ButtonBuilder>().addComponents(
     .setCustomId("bounty")
     .setLabel("Bounty")
     .setStyle(ButtonStyle.Secondary)
-    .setEmoji("<:bounty:1110635757565132901>"),
-  new ButtonBuilder()
-    .setCustomId("dungeon")
-    .setLabel("Dungeon")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("<:dungeon:1110583517114531870>"),
-  new ButtonBuilder()
-    .setCustomId("nightmare_dungeon")
-    .setLabel("Nightmare Dungeon")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("<:nightmare_dungeon:1110605351851659336>")
+    .setEmoji("<:bounty:1110635757565132901>")
 );

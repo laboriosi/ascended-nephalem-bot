@@ -1,7 +1,9 @@
 import { GuildMember, PermissionsBitField } from "discord.js";
 import { denounceInfo, suggestionInfo } from "~embeds";
 import { ChannelType, Interaction } from "~types";
-import { closeChannelButton } from "~components";
+import { closeChannelButton, groupDescriptionModal } from "~components";
+
+const localState = {};
 
 export default async (interaction: Interaction) => {
   try {
@@ -13,15 +15,90 @@ export default async (interaction: Interaction) => {
       BOUNTY_ROLE_ID: bountyRoleId,
       DUNGEON_ROLE_ID: dungeonRoleId,
       NIGHTMARE_DUNGEON_ROLE_ID: nightmareDungeonRoleId,
+      WORLD_BOSS_ROLE_ID: worldBossRoleId,
       TICKET_CATEGORY_ID: ticketCategoryId,
       OFFICER_ROLE_ID: officerRoleId,
       HELPER_ROLE_ID: helperRoleId,
+      RECRUITMENT_PENDING_ROLE_ID: recruitmentPendingRoleId,
+      VISITANT_ROLE_ID: visitantRoleId,
+      GENERAL_CHAT_ID: generalChatId,
+      MEMBERS_TEXT_CHANNEL_ID: membersTextChannelId,
+      GROUP_TEXT_CHANNEL_ID: groupTextChannelId,
+      CREATE_VOICE_CHANNEL_ID: createVoiceChannelId,
+      GROUPS_CATEGORY_ID: groupsCategoryId,
     } = process.env;
     const member = interaction.member as GuildMember;
     const user = member.user;
     const guild = member.guild;
 
+    if (interaction.isModalSubmit()) {
+      if (interaction.customId === "groupModal") {
+        const groupDescription = interaction.fields.getTextInputValue("groupDescription");
+        const groupTextChannel = await guild.channels.fetch(groupTextChannelId);
+
+        if (member?.voice?.channel?.parent?.id === groupsCategoryId) {
+          const invite = await member?.voice?.channel?.createInvite();
+
+          if (groupTextChannel.type === ChannelType.GuildText) {
+            await groupTextChannel.send({
+              content: `${groupDescription}\n${invite.url} <@&${localState[member.id].selectedRole}>`,
+            });
+          }
+
+          await interaction.reply({
+            ephemeral: true,
+            content: `Seu grupo foi compartilhado no canal <#${groupTextChannelId}>`,
+          });
+        } else {
+          await interaction.reply({
+            ephemeral: true,
+            content: `Para compartilhar um grupo você precisa primeiro criar em <#${createVoiceChannelId}>`,
+          });
+        }
+      }
+    }
+
+    if (interaction.isStringSelectMenu()) {
+      if (interaction.customId === "role") {
+        const [value] = interaction.values;
+
+        localState[member.id] = {
+          selectedRole: value,
+        };
+
+        await interaction.deferUpdate();
+      }
+    }
     if (interaction.isButton()) {
+      if (interaction.customId === "shareGroup") {
+        await interaction.showModal(groupDescriptionModal);
+      }
+
+      if (interaction.customId === "approve") {
+        interaction.deferUpdate();
+        const [embed] = interaction.message.embeds;
+        const [, , discordId] = embed.fields;
+        const member = await interaction.guild.members.fetch(discordId.value);
+        await member.roles.add(memberRoleId);
+        await member.roles.add(recruitmentPendingRoleId);
+        await member.roles.add("1112109456487104553"); // tirar depois que tiver tudo migrado
+        await member.roles.remove(visitantRoleId);
+
+        const generalChat = await interaction.guild.channels.fetch(generalChatId);
+
+        if (generalChat.type === ChannelType.GuildText) {
+          await generalChat.send({
+            content: `Bem vindo, nephalem <@${member.id}>!`,
+          });
+        }
+        await interaction.message.delete();
+      }
+
+      if (interaction.customId === "deny") {
+        interaction.deferUpdate();
+        interaction.message.delete();
+      }
+
       if (interaction.customId === "leveling") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -69,6 +146,16 @@ export default async (interaction: Interaction) => {
           member.roles.remove(nightmareDungeonRoleId);
         } else {
           member.roles.add(nightmareDungeonRoleId);
+        }
+      }
+
+      if (interaction.customId === "world_boss") {
+        interaction.deferUpdate();
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        if (member.roles.cache.has(worldBossRoleId)) {
+          member.roles.remove(worldBossRoleId);
+        } else {
+          member.roles.add(worldBossRoleId);
         }
       }
 
