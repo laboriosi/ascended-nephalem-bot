@@ -12,7 +12,7 @@ export default async (interaction: Interaction) => {
       MEMBER_ROLE_ID: memberRoleId,
       LEVELING_ROLE_ID: levelingRoleId,
       PVP_ROLE_ID: pvpRoleId,
-      BOUNTY_ROLE_ID: bountyRoleId,
+      HELLTIDE_ROLE_ID: helltideRoleId,
       DUNGEON_ROLE_ID: dungeonRoleId,
       NIGHTMARE_DUNGEON_ROLE_ID: nightmareDungeonRoleId,
       WORLD_BOSS_ROLE_ID: worldBossRoleId,
@@ -120,13 +120,13 @@ export default async (interaction: Interaction) => {
         }
       }
 
-      if (interaction.customId === "bounty") {
+      if (interaction.customId === "helltideRoleId") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
-        if (member.roles.cache.has(bountyRoleId)) {
-          member.roles.remove(bountyRoleId);
+        if (member.roles.cache.has(helltideRoleId)) {
+          member.roles.remove(helltideRoleId);
         } else {
-          member.roles.add(bountyRoleId);
+          member.roles.add(helltideRoleId);
         }
       }
 

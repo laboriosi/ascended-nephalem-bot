@@ -12,10 +12,10 @@ export default new ActionRowBuilder<ButtonBuilder>().addComponents(
     .setStyle(ButtonStyle.Secondary)
     .setEmoji("<:pvp:1110604343830380574>"),
   new ButtonBuilder()
-    .setCustomId("bounty")
-    .setLabel("Bounty")
+    .setCustomId("helltide")
+    .setLabel("Helltide")
     .setStyle(ButtonStyle.Secondary)
-    .setEmoji("<:bounty:1110635757565132901>"),
+    .setEmoji("<:helltide:1127274346755391578>"),
   new ButtonBuilder()
     .setCustomId("hardcore")
     .setLabel("Hardcore")

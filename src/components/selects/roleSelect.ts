@@ -16,9 +16,9 @@ export default new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
         emoji: "<:pvp:1110604343830380574>",
       },
       {
-        label: "Bounty",
+        label: "Helltide",
         value: "1110663058654773379",
-        emoji: "<:bounty:1110635757565132901>",
+        emoji: "<:helltide:1127274346755391578>",
       },
       {
         label: "Dungeon",
