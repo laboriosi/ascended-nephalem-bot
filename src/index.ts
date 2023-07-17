@@ -31,7 +31,7 @@ async function helltideAnnounce() {
         const generalChatTextChannel = await client.channels.fetch(generalChatId);
 
         if (generalChatTextChannel.type === ChannelType.GuildText) {
-          generalChatTextChannel.send(`A **helltide** irá começar daqui **5 minutos**. <@&${helltideRoleId}>`);
+          generalChatTextChannel.send(`A helltide irá começar daqui 5 minutos. <@&${helltideRoleId}>`);
         }
 
         setTimeout(helltideAnnounce, 360000);
@@ -60,7 +60,7 @@ async function worldBossAnnounce() {
 
         if (generalChatTextChannel.type === ChannelType.GuildText) {
           generalChatTextChannel.send(
-            `${worldBossNames[name]} irá spawnar em **${territory}, ${zone}** daqui **5 minutos**. <@&${worldBossRoleId}>`
+            `${worldBossNames[name]} irá spawnar em ${territory}, ${zone} daqui 5 minutos. <@&${worldBossRoleId}>`
           );
         }
 
