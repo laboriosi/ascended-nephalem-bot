@@ -120,7 +120,7 @@ export default async (interaction: Interaction) => {
         }
       }
 
-      if (interaction.customId === "helltideRoleId") {
+      if (interaction.customId === "helltide") {
         interaction.deferUpdate();
         const member = await interaction.guild.members.fetch(interaction.user.id);
         if (member.roles.cache.has(helltideRoleId)) {
